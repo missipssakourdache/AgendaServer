@@ -31,9 +31,12 @@ app.use(function (req, res, next) {
 
 var Schema = mongo.Schema;  
   
-var UsersSchema = new Schema({      
- name: { type: String   },       
- address: { type: String   },   
+var UserSchema = new Schema({      
+ firstName: { type: String   },       
+ lastName: { type: String   },   
+ email : { type: String   },   
+ password : { type: String},   
+ date : { type: String},   
 },{ versionKey: false });  
    
 
@@ -41,7 +44,7 @@ var UsersSchema = new Schema({
  * on demande a mongo de faire un mapping sur l'objet
  * UsersSchema qui seront stockes dans la collections 'users'
  */
-var model = mongo.model('users', UsersSchema, 'users');  
+var modelUser = mongo.model('users', UserSchema, 'users');  
 
 /*
  * home url
@@ -54,17 +57,20 @@ app.get("/", function(){
  * le webservice qui permet d'enregister un utilisateur
  */
 app.post("/api/save-user",function(req,res){   
-	var mod = new model(req.body);  
- 	if(req.body.mode =="save"){  
-    	mod.save(function(err,data){  
-      		if(err){  
-         		res.send(err);                
-      		}else{        
-          		res.send({data:"Le nouveau utilisateur a été enregistré"});  
-      		}  
- 		});  
-	}
-})	  
+	var mUser = new modelUser(req.body);
+	console.log("request >>>>>>> "+mUser);
+	mUser.save(function(err,data){  
+		console.log("sent to save");
+  		if(err){  
+  			console.log("error  >>>>>>> "+error);
+     		res.send(err);                
+  		}else{        
+  			console.log("send result");
+      		res.send({data:"Le nouveau utilisateur a été enregistré"});  
+  		}  
+	});  
+	
+});  
 
 
 /*
